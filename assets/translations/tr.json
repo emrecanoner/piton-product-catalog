@@ -1,0 +1,44 @@
+{
+    "common": {
+        "app_name": "Ürün Kataloğu",
+        "loading": "Yükleniyor...",
+        "error": "Hata",
+        "success": "Başarılı",
+        "skip": "Atla",
+        "search": "Ara..."
+    },
+    "auth": {
+        "login": "Giriş Yap",
+        "register": "Kayıt Ol",
+        "email": "E-posta",
+        "password": "Şifre",
+        "name": "Ad Soyad",
+        "remember_me": "Beni Hatırla",
+        "welcome_back": "Tekrar Hoşgeldiniz!",
+        "login_to_account": "Hesabınıza giriş yapın",
+        "register_account": "Hesap oluşturun",
+        "welcome": "Hoşgeldiniz!",
+        "fill_all_fields": "Lütfen tüm alanları doldurun",
+        "invalid_credentials": "Geçersiz email veya şifre"
+    },
+    "validation": {
+        "email_required": "E-posta gereklidir",
+        "email_invalid": "Geçerli bir e-posta adresi giriniz",
+        "password_required": "Şifre gereklidir",
+        "password_invalid": "Şifre 6-20 karakter arası ve alfanumerik olmalıdır",
+        "name_required": "Ad Soyad gereklidir"
+    },
+    "home": {
+        "best_seller": "Çok Satanlar",
+        "categories": "Kategoriler",
+        "view_all": "Tümünü Gör",
+        "welcome": "Hoş geldiniz!"
+    },
+    "product": {
+        "details": "Detaylar",
+        "summary": "Özet",
+        "buy_now": "Satın Al",
+        "add_to_favorites": "Favorilere Ekle",
+        "remove_from_favorites": "Favorilerden Çıkar"
+    }
+} 
