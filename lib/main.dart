@@ -6,11 +6,18 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'core/di/injection.dart';
 import 'core/theme/app_theme.dart';
 import 'features/splash/views/splash_screen.dart';
+import 'features/auth/models/user.dart';  // User modelini import et
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  
+  // Hive'ı başlat
   await Hive.initFlutter();
+  
+  // User adapter'ını kaydet
+  Hive.registerAdapter(UserAdapter());
+  
   await configureDependencies();
   
   runApp(

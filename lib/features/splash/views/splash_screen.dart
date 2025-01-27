@@ -70,7 +70,7 @@ class SplashScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               TextButton(
                 onPressed: () => ref.read(splashNotifierProvider.notifier).skip(),
                 child: Text(
@@ -81,7 +81,7 @@ class SplashScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 32),
             ],
           ),
         ),
