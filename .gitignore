@@ -82,4 +82,4 @@ app.*.map.json
 .envrc
 
 #TODO
-.todo
+todo.txt
