@@ -80,3 +80,6 @@ app.*.map.json
 
 # Env
 .envrc
+
+#TODO
+.todo
