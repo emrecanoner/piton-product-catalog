@@ -8,7 +8,7 @@ import 'core/theme/app_theme.dart';
 import 'features/splash/views/splash_screen.dart';
 import 'features/auth/models/user.dart';  // User modelini import et
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   
@@ -22,9 +22,9 @@ Future<void> main() async {
   
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('en'), Locale('tr')],
+      supportedLocales: const [Locale('tr'), Locale('en')],
       path: 'assets/translations',
-      fallbackLocale: const Locale('en'),
+      fallbackLocale: const Locale('tr'),
       child: const ProviderScope(
         child: MyApp(),
       ),

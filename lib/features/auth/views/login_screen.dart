@@ -75,11 +75,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           context: context,
           builder: (context) => AlertDialog(
             title: Text('auth.login'.tr()),
-            content: Text('auth.invalid_credentials_message'.tr()),
+            content: Text('auth.invalid_credentials'.tr()),
+            actionsAlignment: MainAxisAlignment.end,
+            actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('common.ok'.tr()),
+                child: Text(
+                  'common.ok'.tr(),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ],
           ),

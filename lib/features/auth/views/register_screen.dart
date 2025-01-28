@@ -53,21 +53,41 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           context: context,
           builder: (context) => AlertDialog(
             title: Text('auth.register'.tr()),
-            content: Text('auth.email_already_exists'.tr()),
+            content: Text('auth.email_exists'.tr()),
+            actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
             actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
-                },
-                child: Text('auth.login'.tr()),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('common.ok'.tr()),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      );
+                    },
+                    child: Text(
+                      'auth.login'.tr(),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 5), // 5 pixel boşluk
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      'common.ok'.tr(),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

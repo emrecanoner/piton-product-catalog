@@ -5,7 +5,8 @@
         "error": "Error",
         "success": "Success",
         "skip": "Skip",
-        "search": "Search..."
+        "search": "Search...",
+        "ok": "Ok"
     },
     "auth": {
         "login": "Login",
@@ -14,17 +15,23 @@
         "password": "Password",
         "name": "Full Name",
         "remember_me": "Remember Me",
-        "welcome_back": "Welcome back!",
+        "welcome_back": "Welcome Back!",
         "login_to_account": "Login to your account",
         "register_account": "Register an account",
-        "welcome": "Welcome"
+        "welcome": "Welcome!",
+        "fill_all_fields": "Please fill all fields",
+        "invalid_credentials": "Invalid email or password",
+        "registration_success": "Registration completed successfully",
+        "email_exists": "This email is already in use",
+        "registration_error": "An error occurred during registration",
+        "login_error": "An error occurred during login"
     },
     "validation": {
         "email_required": "Email is required",
         "email_invalid": "Please enter a valid email",
         "password_required": "Password is required",
         "password_invalid": "Password must be 6-20 characters and alphanumeric",
-        "name_required": "Name is required"
+        "name_required": "Full name is required"
     },
     "home": {
         "best_seller": "Best Seller",
