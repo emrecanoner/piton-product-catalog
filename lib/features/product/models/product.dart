@@ -7,6 +7,7 @@ class Product {
   final String cover;
   final int sales;
   final int likes;
+  final String? category;
 
   Product({
     required this.id,
@@ -17,6 +18,7 @@ class Product {
     required this.cover,
     required this.sales,
     required this.likes,
+    this.category,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -26,9 +28,10 @@ class Product {
       author: json['author'] as String,
       description: json['description'] as String,
       price: (json['price'] as num).toDouble(),
-      cover: 'https://assign-api.piton.com.tr/api/rest/cover_image/${json['cover']}',
+      cover: json['cover'] as String,
       sales: json['sales'] as int,
       likes: json['likes_aggregate']['aggregate']['count'] as int,
+      category: json['category'] as String?,
     );
   }
 } 

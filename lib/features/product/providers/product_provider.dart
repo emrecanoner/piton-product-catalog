@@ -36,9 +36,33 @@ final productServiceProvider = Provider<ProductService>((ref) {
   return ProductService(dio);
 });
 
-final productProvider = StateNotifierProvider<ProductNotifier, AsyncValue<List<Product>>>((ref) {
+final productProvider = FutureProvider.family<List<Product>, int>((ref, categoryId) async {
   final productService = ref.watch(productServiceProvider);
-  return ProductNotifier(productService);
+  return productService.getProductsByCategory(categoryId);
+});
+
+// Best Seller ürünleri için ayrı bir provider
+final bestSellerProvider = FutureProvider<List<Product>>((ref) async {
+  final productService = ref.watch(productServiceProvider);
+  final allProducts = await productService.getProductsByCategory(1); // Tüm ürünleri al
+  // Satış sayısına göre sırala ve en çok satanları al
+  final sortedProducts = List<Product>.from(allProducts)
+    ..sort((a, b) => b.sales.compareTo(a.sales));
+  return sortedProducts.take(5).toList(); // İlk 5 ürünü göster
+});
+
+// Classics ürünleri için ayrı bir provider
+final classicsProvider = FutureProvider<List<Product>>((ref) async {
+  final productService = ref.watch(productServiceProvider);
+  final products = await productService.getProductsByCategory(2); // Classics kategorisi
+  return products;
+});
+
+// Children ürünleri için ayrı bir provider
+final childrenProvider = FutureProvider<List<Product>>((ref) async {
+  final productService = ref.watch(productServiceProvider);
+  final products = await productService.getProductsByCategory(3); // Children kategorisi
+  return products;
 });
 
 class ProductNotifier extends StateNotifier<AsyncValue<List<Product>>> {
