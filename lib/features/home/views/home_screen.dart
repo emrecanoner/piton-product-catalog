@@ -8,6 +8,7 @@ import '../../auth/views/login_screen.dart';
 import '../../product/models/category.dart';
 import '../../product/models/product.dart';
 import '../../product/providers/category_provider.dart';
+import '../../category/views/category_detail_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -104,7 +105,7 @@ class HomeScreen extends ConsumerWidget {
                   filled: true,
                   fillColor: const Color(0xFFF4F4FF),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(4),
                     borderSide: BorderSide.none,
                   ),
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -115,13 +116,13 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 24),
 
             // Best Seller Section
-            _buildCategorySection('Best Seller', bestSellers),
+            _buildCategorySection(context, 'Best Seller', bestSellers),
 
             // Classics Section
-            _buildCategorySection('Classics', classics),
+            _buildCategorySection(context, 'Classics', classics),
 
             // Children Section
-            _buildCategorySection('Children', children),
+            _buildCategorySection(context, 'Children', children),
           ],
         ),
       ),
@@ -135,6 +136,7 @@ class HomeScreen extends ConsumerWidget {
         height: 32,
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFF6251DD) : const Color(0xFFF4F4FF),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -150,7 +152,14 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCategorySection(String title, AsyncValue<List<Product>> products) {
+  Widget _buildCategorySection(BuildContext context, String title, AsyncValue<List<Product>> products) {
+    // Ekran genişliğine göre responsive değerler
+    final screenWidth = MediaQuery.of(context).size.width;
+    final containerHeight = 140.0;
+    final imageWidth = screenWidth * 0.25; // Ekran genişliğinin %25'i
+    final imageHeight = containerHeight * 0.9; // Container yüksekliğinin %90'ı
+    final cardWidth = screenWidth * 0.6; // Ekran genişliğinin %60'ı
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -167,7 +176,17 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CategoryDetailScreen(
+                        title: title,
+                        products: products,
+                      ),
+                    ),
+                  );
+                },
                 child: Text(
                   'View All',
                   style: TextStyle(
@@ -180,7 +199,7 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
         SizedBox(
-          height: 140,
+          height: containerHeight,
           child: products.when(
             data: (products) => ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -189,75 +208,93 @@ class HomeScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final product = products[index];
                 return Container(
-                  width: 280,
+                  width: cardWidth,
                   margin: const EdgeInsets.only(right: 16),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF4F4FF),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Row(
                     children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomLeft: Radius.circular(8),
-                        ),
-                        child: Image.network(
-                          product.cover,
-                          width: 100,
-                          height: 140,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 100,
-                              height: 140,
-                              color: Colors.grey[300],
-                              child: const Icon(Icons.image_not_supported),
-                            );
-                          },
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: SizedBox(
+                          width: imageWidth,
+                          height: containerHeight,
+                          child: Center(
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4),
+                                bottomLeft: Radius.circular(4),
+                              ),
+                              child: Image.network(
+                                product.cover,
+                                width: imageWidth,
+                                height: imageHeight,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: imageWidth,
+                                    height: imageHeight,
+                                    color: Colors.grey[300],
+                                    child: const Icon(Icons.image_not_supported),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    product.name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                                  const SizedBox(height: 20),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.name,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 11,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        product.author,
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 9,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    product.author,
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 12,
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    child: Text(
+                                      '${product.price.toStringAsFixed(2)} \$',
+                                      style: const TextStyle(
+                                        color: Color(0xFF6251DD),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                      ),
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
-                              Text(
-                                '${product.price.toStringAsFixed(2)} \$',
-                                style: const TextStyle(
-                                  color: Color(0xFF6251DD),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
                       ),
                     ],
