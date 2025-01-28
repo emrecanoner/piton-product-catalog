@@ -11,37 +11,34 @@ class SplashScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(splashNotifierProvider, (previous, next) {
-      next.whenData((isLoggedIn) {
-        if (!next.isLoading) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  isLoggedIn ? const HomeScreen() : const LoginScreen(),
-            ),
-          );
-        }
-      });
+    final size = MediaQuery.of(context).size;
+    
+    ref.listen(splashProvider, (previous, next) {
+      if (next == SplashState.authenticated) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else if (next == SplashState.unauthenticated) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
     });
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1D1D4E), // Yeni arka plan rengi
+      backgroundColor: const Color(0xFF1D1D4E), // Koyu mor arka plan
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
           child: Column(
             children: [
               const Spacer(),
               Center(
-                child: SizedBox(
-                  width: 200,  // Yeni genişlik
-                  height: 130, // Yeni yükseklik
-                  child: Image.asset(
-                    'assets/images/Logo.png',
-                    color: Colors.blue, // Logo rengini mavi yaptık
-                    fit: BoxFit.contain,
-                  ),
+                child: Image.asset(
+                  'assets/images/Logo.png',
+                  width: size.width * 0.3,
+                  height: size.height * 0.15,
+                  color: const Color(0xFF6251DD), // Logo rengi mor
                 ),
               ),
               const Spacer(),
@@ -55,33 +52,32 @@ class SplashScreen extends ConsumerWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFEF6B4A), // Yeni turuncu renk
-                  minimumSize: const Size(double.infinity, 56),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  backgroundColor: const Color(0xFFEF6B4A), // Turuncu buton
+                  minimumSize: Size(double.infinity, size.height * 0.07),
+                  shape: const RoundedRectangleBorder(), // Köşeler düz
                 ),
                 child: Text(
                   'auth.login'.tr(),
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontSize: size.width * 0.04,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: size.height * 0.02),
               TextButton(
-                onPressed: () => ref.read(splashNotifierProvider.notifier).skip(),
+                onPressed: () => ref.read(splashProvider.notifier).skip(),
                 child: Text(
                   'common.skip'.tr(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+                  style: TextStyle(
+                    color: const Color(0xFF6251DD), // Skip yazısı mor
+                    fontSize: size.width * 0.04,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: size.height * 0.03),
             ],
           ),
         ),

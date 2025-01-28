@@ -1,29 +1,49 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../auth/repositories/auth_repository.dart';
+import '../../../core/providers/providers.dart';
 
-final splashNotifierProvider =
-    AsyncNotifierProvider<SplashNotifier, bool>(() => SplashNotifier());
+enum SplashState {
+  initial,
+  authenticated,
+  unauthenticated,
+}
 
-@injectable
-class SplashNotifier extends AsyncNotifier<bool> {
-  @override
-  Future<bool> build() async {
-    final prefs = await SharedPreferences.getInstance();
-    final rememberMe = prefs.getBool('remember_me') ?? false;
-    
-    if (!rememberMe) {
-      // Beni hatırla seçili değilse 3 saniye bekle
-      await Future.delayed(const Duration(seconds: 3));
-    }
-    
-    final authRepository = ref.read(authRepositoryProvider);
-    return authRepository.isLoggedIn();
+final splashProvider = StateNotifierProvider<SplashNotifier, SplashState>((ref) {
+  return SplashNotifier(ref);
+});
+
+class SplashNotifier extends StateNotifier<SplashState> {
+  final Ref _ref;
+
+  SplashNotifier(this._ref) : super(SplashState.initial) {
+    checkAuthState();
   }
 
-  Future<void> skip() async {
-    // Skip butonuna basıldığında beklemeyi iptal et
-    state = const AsyncValue.data(false);
+  Future<void> checkAuthState() async {
+    await Future.delayed(const Duration(seconds: 2));
+    
+    final authRepository = _ref.read(authRepositoryProvider);
+    final prefs = _ref.read(sharedPreferencesProvider);
+    
+    if (prefs == null) {
+      state = SplashState.unauthenticated;
+      return;
+    }
+
+    final isLoggedIn = await authRepository.isLoggedIn();
+    final rememberMe = prefs.getBool('rememberMe') ?? false;
+    
+    if (isLoggedIn && rememberMe) {
+      state = SplashState.authenticated;
+    } else {
+      // Token var ama beni hatırla yoksa çıkış yap
+      if (isLoggedIn && !rememberMe) {
+        await authRepository.logout();
+      }
+      state = SplashState.unauthenticated;
+    }
+  }
+
+  void skip() {
+    state = SplashState.unauthenticated;
   }
 } 

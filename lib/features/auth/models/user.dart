@@ -1,21 +1,39 @@
-import 'package:hive/hive.dart';
-
-part 'user.g.dart';
-
-@HiveType(typeId: 0)
-class User extends HiveObject {
-  @HiveField(0)
-  final String name;
-
-  @HiveField(1)
+class User {
+  final int id;
   final String email;
-
-  @HiveField(2)
-  final String password;
+  final String token;
 
   User({
-    required this.name,
+    required this.id,
     required this.email,
-    required this.password,
+    required this.token,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'] as int,
+      email: json['email'] as String,
+      token: json['token'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'token': token,
+    };
+  }
+
+  User copyWith({
+    int? id,
+    String? email,
+    String? token,
+  }) {
+    return User(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      token: token ?? this.token,
+    );
+  }
 } 

@@ -4,7 +4,7 @@
         "loading": "Yükleniyor...",
         "error": "Hata",
         "success": "Başarılı",
-        "skip": "Atla",
+        "skip": "Geç",
         "search": "Ara...",
         "ok": "Tamam"
     },
@@ -14,17 +14,30 @@
         "email": "E-posta",
         "password": "Şifre",
         "name": "Ad Soyad",
-        "remember_me": "Beni Hatırla",
+        "rememberMe": "Beni Hatırla",
         "welcome_back": "Tekrar Hoşgeldiniz!",
         "login_to_account": "Hesabınıza giriş yapın",
         "register_account": "Hesap oluşturun",
-        "welcome": "Hoşgeldiniz!",
+        "welcome": "Hoşgeldiniz",
         "fill_all_fields": "Lütfen tüm alanları doldurun",
         "invalid_credentials": "Girdiğiniz bilgiler hatalı",
         "registration_success": "Kayıt işleminiz başarıyla tamamlandı",
         "email_exists": "Bu e-posta adresi zaten kullanımda",
         "registration_error": "Kayıt işlemi sırasında bir hata oluştu",
-        "login_error": "Giriş yapılırken bir hata oluştu"
+        "login_error": "Giriş yapılırken bir hata oluştu",
+        "dontHaveAccount": "Hesabın yok mu?",
+        "alreadyHaveAccount": "Zaten hesabın var mı?",
+        "errors": {
+            "loginFailed": "Giriş başarısız",
+            "registerFailed": "Kayıt başarısız",
+            "emailExists": "Bu e-posta adresi zaten kayıtlı",
+            "invalidCredentials": "Geçersiz e-posta veya şifre",
+            "emailRequired": "E-posta adresi gerekli",
+            "passwordRequired": "Şifre gerekli",
+            "nameRequired": "Ad Soyad gerekli",
+            "invalidEmail": "Geçerli bir e-posta adresi giriniz",
+            "passwordTooShort": "Şifre en az 6 karakter olmalıdır"
+        }
     },
     "validation": {
         "email_required": "E-posta gereklidir",

@@ -1,46 +1,40 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-
-import 'core/di/injection.dart';
-import 'core/theme/app_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'core/providers/providers.dart';
 import 'features/splash/views/splash_screen.dart';
-import 'features/auth/models/user.dart';  // User modelini import et
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  
-  // Hive'ı başlat
-  await Hive.initFlutter();
-  
-  // User adapter'ını kaydet
-  Hive.registerAdapter(UserAdapter());
-  
-  await configureDependencies();
-  
+
   runApp(
-    EasyLocalization(
-      supportedLocales: const [Locale('tr'), Locale('en')],
-      path: 'assets/translations',
-      fallbackLocale: const Locale('tr'),
-      child: const ProviderScope(
-        child: MyApp(),
+    ProviderScope(
+      child: EasyLocalization(
+        supportedLocales: const [Locale('en', 'US'), Locale('tr', 'TR')],
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en', 'US'),
+        child: const MyApp(),
       ),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Initialize SharedPreferences
+    ref.watch(initializeProvider);
+
     return MaterialApp(
       title: 'Product Catalog',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6251DD)),
+        useMaterial3: true,
+      ),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,

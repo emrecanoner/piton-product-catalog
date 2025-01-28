@@ -28,6 +28,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _loadRememberMe();
   }
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadRememberMe() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString(AppConstants.tokenKey);
@@ -51,224 +58,245 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('remember_me', _rememberMe);
+    if (!_formKey.currentState!.validate()) return;
 
     try {
-      final success = await ref.read(authProvider.notifier).login(email, password);
-      
+      final success = await ref.read(authStateProvider.notifier).login(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+            rememberMe: _rememberMe,
+          );
+
       if (success && mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
-      } else if (mounted) {
-        // SnackBar yerine AlertDialog kullan
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('auth.login'.tr()),
-            content: Text('auth.invalid_credentials'.tr()),
-            actionsAlignment: MainAxisAlignment.end,
-            actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'common.ok'.tr(),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
       }
     } catch (e) {
       if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('common.error'.tr()),
-            content: Text('auth.login_error'.tr()),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('common.ok'.tr()),
-              ),
-            ],
+        String errorMessage = 'auth.errors.loginFailed'.tr();
+        
+        if (e.toString().contains('Invalid credentials')) {
+          errorMessage = 'auth.errors.invalidCredentials'.tr();
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
           ),
         );
       }
     }
   }
 
+  InputDecoration _getInputDecoration(String hint, Size size) {
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: const Color(0xFFF4F5F7),
+      border: const OutlineInputBorder(
+        borderRadius: BorderRadius.zero,
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: size.width * 0.03,
+        vertical: size.height * 0.015,
+      ),
+      errorStyle: TextStyle(
+        fontSize: size.width * 0.025,
+        height: 1,
+      ),
+      errorMaxLines: 2,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
-    final screenHeight = MediaQuery.of(context).size.height;
+    final authState = ref.watch(authStateProvider);
+    final size = MediaQuery.of(context).size;
+    final padding = size.height * 0.02;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: screenHeight - MediaQuery.of(context).padding.top,
-            ),
+          child: SizedBox(
+            height: size.height,
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(padding),
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 32),
-                        Center(
-                          child: SizedBox(
-                            width: 100,
-                            height: 65,
-                            child: Image.asset(
-                              'assets/images/Logo.png',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+                    // 1. BÖLÜM: Logo (En üstte)
+                    SizedBox(height: size.height * 0.05),
+                    Center(
+                      child: SizedBox(
+                        width: size.width * 0.2,
+                        height: size.height * 0.1,
+                        child: Image.asset(
+                          'assets/images/Logo.png',
+                          color: const Color(0xFF6251DD),
+                          fit: BoxFit.contain,
                         ),
-                        const SizedBox(height: 32),
-                        Text(
-                          'auth.welcome_back'.tr(),
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'auth.login_to_account'.tr(),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            hintText: 'auth.email'.tr(),
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            errorStyle: const TextStyle(
-                              fontSize: 12,
-                              height: 1,
-                            ),
-                            errorMaxLines: 2,
-                          ),
-                          validator: Validators.validateEmail,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _passwordController,
-                          decoration: InputDecoration(
-                            hintText: 'auth.password'.tr(),
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            errorStyle: const TextStyle(
-                              fontSize: 12,
-                              height: 1,
-                            ),
-                            errorMaxLines: 2,
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'validation.password_required'.tr();
-                            }
-                            return null;
-                          },
-                          obscureText: true,
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
+                      ),
+                    ),
+
+                    // 2. BÖLÜM: Form alanları (Ortada)
+                    const Spacer(),
+                    Center(
+                      child: SizedBox(
+                        width: size.width * 0.9,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Checkbox(
-                              value: _rememberMe,
-                              onChanged: (value) {
-                                setState(() {
-                                  _rememberMe = value ?? false;
-                                });
-                              },
-                              activeColor: Theme.of(context).primaryColor,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _rememberMe = !_rememberMe;
-                                });
-                              },
-                              child: Text(
-                                'auth.remember_me'.tr(),
-                                style: const TextStyle(fontSize: 14),
+                            Text(
+                              'auth.welcome_back'.tr(),
+                              style: TextStyle(
+                                fontSize: size.width * 0.035,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[600],
                               ),
                             ),
-                            const Spacer(),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const RegisterScreen(),
-                                  ),
-                                );
+                            SizedBox(height: size.height * 0.005),
+                            Text(
+                              'auth.login_to_account'.tr(),
+                              style: TextStyle(
+                                fontSize: size.width * 0.04,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF1D1D4E),
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.03),
+                            
+                            Text('E-mail',
+                              style: TextStyle(
+                                fontSize: size.width * 0.03,
+                                color: Colors.grey[700],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.005),
+                            TextFormField(
+                              controller: _emailController,
+                              decoration: _getInputDecoration('john@mail.com', size),
+                              validator: (value) {
+                                final error = Validators.validateEmail(value);
+                                if (error != null) {
+                                  return error.replaceAll('. ', '.\n');
+                                }
+                                return null;
                               },
-                              child: Text(
-                                'auth.register'.tr(),
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w500,
+                            ),
+                            SizedBox(height: size.height * 0.02),
+                            
+                            Text('Password',
+                              style: TextStyle(
+                                fontSize: size.width * 0.03,
+                                color: Colors.grey[700],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.005),
+                            TextFormField(
+                              controller: _passwordController,
+                              decoration: _getInputDecoration('••••••••', size),
+                              obscureText: true,
+                              validator: (value) {
+                                final error = Validators.validatePassword(value);
+                                if (error != null) {
+                                  return error.replaceAll('. ', '.\n');
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: size.height * 0.02),
+                            
+                            // Remember me ve Register
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: Checkbox(
+                                        value: _rememberMe,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _rememberMe = value ?? false;
+                                          });
+                                        },
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        activeColor: const Color(0xFF6251DD),
+                                      ),
+                                    ),
+                                    SizedBox(width: size.width * 0.02),
+                                    const Text(
+                                      'Remember me',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF6251DD),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const RegisterScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'Register',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF6251DD),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: authState.isLoading ? null : _login,
+                    const Spacer(),
+
+                    // 3. BÖLÜM: Login butonu (En altta)
+                    Center(
+                      child: SizedBox(
+                        width: size.width * 0.9,
+                        height: size.height * 0.07,
+                        child: ElevatedButton(
+                          onPressed: _login,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFEF6B4A),
-                            minimumSize: const Size(double.infinity, 56),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                            shape: const RoundedRectangleBorder(),
+                          ),
+                          child: Text(
+                            'auth.login'.tr(),
+                            style: TextStyle(
+                              fontSize: size.width * 0.035,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
-                          child: authState.isLoading
-                              ? const CircularProgressIndicator(color: Colors.white)
-                              : Text(
-                                  'auth.login'.tr(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
                         ),
-                        const SizedBox(height: 16),
-                      ],
+                      ),
                     ),
+                    SizedBox(height: size.height * 0.03),
                   ],
                 ),
               ),

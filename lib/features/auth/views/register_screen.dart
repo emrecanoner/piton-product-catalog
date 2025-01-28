@@ -20,95 +20,42 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  Future<void> _register() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
+  Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) return;
 
     try {
-      final success = await ref.read(authProvider.notifier)
-          .register(name, email, password);
-      
-      if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('auth.registration_success'.tr()),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(16),
-            duration: const Duration(seconds: 2),
-          ),
-        );
+      final success = await ref.read(authStateProvider.notifier).register(
+            _nameController.text.trim(),
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+          );
 
+      if (success && mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
-      } else if (mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('auth.register'.tr()),
-            content: Text('auth.email_exists'.tr()),
-            actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
-                      );
-                    },
-                    child: Text(
-                      'auth.login'.tr(),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 5), // 5 pixel boşluk
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      'common.ok'.tr(),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
       }
     } catch (e) {
       if (mounted) {
+        String errorMessage = 'auth.errors.registerFailed'.tr();
+        
+        if (e.toString().contains('already exists')) {
+          errorMessage = 'auth.errors.emailExists'.tr();
+        }
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('auth.registration_error'.tr()),
+            content: Text(errorMessage),
             backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(16),
-            duration: const Duration(seconds: 3),
-            action: SnackBarAction(
-              label: 'common.ok'.tr(),
-              textColor: Colors.white,
-              onPressed: () {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              },
-            ),
           ),
         );
       }
@@ -117,150 +64,174 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
-    final screenHeight = MediaQuery.of(context).size.height;
+    final authState = ref.watch(authStateProvider);
+    final size = MediaQuery.of(context).size;
+    final padding = size.height * 0.02;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: screenHeight - MediaQuery.of(context).padding.top,
-            ),
+          child: SizedBox(
+            height: size.height,
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(padding),
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 32),
-                        Center(
-                          child: SizedBox(
-                            width: 100,
-                            height: 65,
-                            child: Image.asset(
-                              'assets/images/Logo.png',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+                    SizedBox(height: size.height * 0.05),
+                    Center(
+                      child: SizedBox(
+                        width: size.width * 0.2,
+                        height: size.height * 0.1,
+                        child: Image.asset(
+                          'assets/images/Logo.png',
+                          color: const Color(0xFF6251DD),
+                          fit: BoxFit.contain,
                         ),
-                        const SizedBox(height: 32),
-                        Text(
-                          'auth.welcome'.tr(),
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'auth.register_account'.tr(),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        TextFormField(
-                          controller: _nameController,
-                          decoration: InputDecoration(
-                            hintText: 'auth.name'.tr(),
-                            prefixIcon: const Icon(Icons.person_outline),
-                            errorStyle: const TextStyle(
-                              fontSize: 12,
-                              height: 1,
-                            ),
-                            errorMaxLines: 2,
-                          ),
-                          validator: Validators.validateName,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            hintText: 'auth.email'.tr(),
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            errorStyle: const TextStyle(
-                              fontSize: 12,
-                              height: 1,
-                            ),
-                            errorMaxLines: 2,
-                          ),
-                          validator: Validators.validateEmail,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _passwordController,
-                          decoration: InputDecoration(
-                            hintText: 'auth.password'.tr(),
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            errorStyle: const TextStyle(
-                              fontSize: 12,
-                              height: 1,
-                            ),
-                            errorMaxLines: 3,
-                          ),
-                          validator: Validators.validatePassword,
-                          obscureText: true,
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                      ),
+                    ),
+                    const Spacer(),
+                    Center(
+                      child: SizedBox(
+                        width: size.width * 0.9,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreen(),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'auth.login'.tr(),
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                            Text(
+                              'auth.welcome'.tr(),
+                              style: TextStyle(
+                                fontSize: size.width * 0.035,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[600],
                               ),
+                            ),
+                            SizedBox(height: size.height * 0.005),
+                            Text(
+                              'auth.register_account'.tr(),
+                              style: TextStyle(
+                                fontSize: size.width * 0.04,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF1D1D4E),
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.03),
+                            Text(
+                              'Name',
+                              style: TextStyle(
+                                fontSize: size.width * 0.03,
+                                color: Colors.grey[700],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.005),
+                            TextFormField(
+                              controller: _nameController,
+                              decoration: _getInputDecoration('John Doe'),
+                              validator: (value) {
+                                final error = Validators.validateName(value);
+                                if (error != null) {
+                                  return error.replaceAll('. ', '.\n');
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: size.height * 0.02),
+                            Text(
+                              'E-mail',
+                              style: TextStyle(
+                                fontSize: size.width * 0.03,
+                                color: Colors.grey[700],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.005),
+                            TextFormField(
+                              controller: _emailController,
+                              decoration: _getInputDecoration('john@mail.com'),
+                              validator: (value) {
+                                final error = Validators.validateEmail(value);
+                                if (error != null) {
+                                  return error.replaceAll('. ', '.\n');
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: size.height * 0.02),
+                            Text(
+                              'Password',
+                              style: TextStyle(
+                                fontSize: size.width * 0.03,
+                                color: Colors.grey[700],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.005),
+                            TextFormField(
+                              controller: _passwordController,
+                              decoration: _getInputDecoration('••••••••'),
+                              obscureText: true,
+                              validator: (value) {
+                                final error = Validators.validatePassword(value);
+                                if (error != null) {
+                                  return error.replaceAll('. ', '.\n');
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: size.height * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const LoginScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'Login',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF6251DD),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: authState.isLoading ? null : _register,
+                    const Spacer(),
+                    Center(
+                      child: SizedBox(
+                        width: size.width * 0.9,
+                        height: size.height * 0.07,
+                        child: ElevatedButton(
+                          onPressed: _register,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFEF6B4A),
-                            minimumSize: const Size(double.infinity, 56),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                            shape: const RoundedRectangleBorder(),
+                          ),
+                          child: Text(
+                            'auth.register'.tr(),
+                            style: TextStyle(
+                              fontSize: size.width * 0.035,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
-                          child: authState.isLoading
-                              ? const CircularProgressIndicator(color: Colors.white)
-                              : Text(
-                                  'auth.register'.tr(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
                         ),
-                        const SizedBox(height: 16),
-                      ],
+                      ),
                     ),
+                    SizedBox(height: size.height * 0.03),
                   ],
                 ),
               ),
@@ -268,6 +239,28 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  InputDecoration _getInputDecoration(String hint) {
+    final size = MediaQuery.of(context).size;
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: const Color(0xFFF4F5F7),
+      border: const OutlineInputBorder(
+        borderRadius: BorderRadius.zero,
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: size.width * 0.03,
+        vertical: size.height * 0.015,
+      ),
+      errorStyle: TextStyle(
+        fontSize: size.width * 0.025,
+        height: 1,
+      ),
+      errorMaxLines: 2,
     );
   }
 } 
