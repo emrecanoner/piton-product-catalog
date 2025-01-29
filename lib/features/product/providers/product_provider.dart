@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import '../models/product.dart';
 import '../services/product_service.dart';
 import '../../../core/providers/providers.dart';
+import '../../home/providers/search_provider.dart';
+import 'category_provider.dart';
 
 // ProductService provider'ı
 final productServiceProvider = Provider<ProductService>((ref) {
@@ -65,6 +67,13 @@ final childrenProvider = FutureProvider<List<Product>>((ref) async {
   return products;
 });
 
+// Philosophy ürünleri için provider
+final philosophyProvider = FutureProvider<List<Product>>((ref) async {
+  final productService = ref.watch(productServiceProvider);
+  final products = await productService.getProductsByCategory(4); // Philosophy kategorisi
+  return products;
+});
+
 class ProductNotifier extends StateNotifier<AsyncValue<List<Product>>> {
   final ProductService _productService;
 
@@ -98,4 +107,38 @@ class ProductNotifier extends StateNotifier<AsyncValue<List<Product>>> {
       state = AsyncValue.error(e, stack);
     }
   }
-} 
+}
+
+final filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {
+  final selectedCategory = ref.watch(selectedCategoryProvider);
+  final searchQuery = ref.watch(searchQueryProvider);
+
+  // Seçili kategoriye göre doğru provider'ı kullan
+  final products = switch(selectedCategory?.toLowerCase()) {
+    'best seller' => ref.watch(bestSellerProvider),
+    'classics' => ref.watch(classicsProvider),
+    'children' => ref.watch(childrenProvider),
+    'philosophy' => ref.watch(philosophyProvider),
+    _ => ref.watch(productProvider(1)), // Default olarak tüm ürünler
+  };
+
+  return products.when(
+    data: (productList) {
+      var filteredList = productList;
+
+      // Sadece arama filtresi uygula (kategori filtresi zaten yukarıda uygulandı)
+      if (searchQuery.isNotEmpty) {
+        final query = searchQuery.toLowerCase();
+        filteredList = filteredList.where((product) =>
+          product.name.toLowerCase().contains(query) ||
+          (product.author?.toLowerCase() ?? '').contains(query) ||
+          (product.description?.toLowerCase() ?? '').contains(query)
+        ).toList();
+      }
+
+      return AsyncValue.data(filteredList);
+    },
+    loading: () => const AsyncValue.loading(),
+    error: (error, stack) => AsyncValue.error(error, stack),
+  );
+});

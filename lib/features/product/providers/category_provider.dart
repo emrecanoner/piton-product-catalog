@@ -8,4 +8,13 @@ final categoryProvider = FutureProvider<List<Category>>((ref) async {
   return productService.getCategories();
 });
 
-final selectedCategoryProvider = StateProvider<int>((ref) => 1); // Varsayılan kategori 
+// Seçili kategori için provider
+final selectedCategoryProvider = StateProvider<String?>((ref) => null);
+
+// Kategori listesi için provider (API'daki kategorilerle eşleştirdik)
+final categoriesProvider = Provider<List<String>>((ref) => [
+  'Best Seller',
+  'Classics',
+  'Children',
+  'Philosophy',
+]); 

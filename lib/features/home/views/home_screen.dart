@@ -9,6 +9,7 @@ import '../../product/models/category.dart';
 import '../../product/models/product.dart';
 import '../../product/providers/category_provider.dart';
 import '../../category/views/category_detail_screen.dart';
+import '../../home/providers/search_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -16,10 +17,13 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCategory = ref.watch(selectedCategoryProvider);
-    final categories = ref.watch(categoryProvider);
+    final categories = ref.watch(categoriesProvider);
     final bestSellers = ref.watch(bestSellerProvider);
     final classics = ref.watch(classicsProvider);
     final children = ref.watch(childrenProvider);
+    final philosophy = ref.watch(philosophyProvider);
+    final searchQuery = ref.watch(searchQueryProvider);
+    final filteredProducts = ref.watch(filteredProductsProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -63,66 +67,54 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 16),
 
             // Kategori filtreleri
-            categories.when(
-              data: (categories) => SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    _buildFilterChip('All', selectedCategory == 1, () {
-                      ref.read(selectedCategoryProvider.notifier).state = 1;
-                    }),
-                    ...categories.where((category) => 
-                      category.name.toLowerCase() != 'best seller'
-                    ).map((category) => Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: _buildFilterChip(
-                        category.name,
-                        selectedCategory == category.id,
-                        () {
-                          ref.read(selectedCategoryProvider.notifier).state = category.id;
-                        },
-                      ),
-                    )),
-                  ],
-                ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  _buildFilterChip('All', selectedCategory == null, () {
+                    ref.read(selectedCategoryProvider.notifier).state = null;
+                  }),
+                  ...categories.map((category) => Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: _buildFilterChip(
+                      category,
+                      selectedCategory == category,
+                      () {
+                        ref.read(selectedCategoryProvider.notifier).state = category;
+                      },
+                    ),
+                  )),
+                ],
               ),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Error: $error')),
             ),
 
             const SizedBox(height: 16),
 
-            // Arama çubuğu
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  hintStyle: TextStyle(color: Colors.grey[400]),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-                  suffixIcon: Icon(Icons.tune, color: Colors.grey[400]),
-                  filled: true,
-                  fillColor: const Color(0xFFF4F4FF),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-              ),
-            ),
+            // Search bar
+            _buildSearchBar(ref),
 
             const SizedBox(height: 24),
 
-            // Best Seller Section
-            _buildCategorySection(context, 'Best Seller', bestSellers),
-
-            // Classics Section
-            _buildCategorySection(context, 'Classics', classics),
-
-            // Children Section
-            _buildCategorySection(context, 'Children', children),
+            // Filtrelenmiş ürünleri gösteriyoruz
+            filteredProducts.when(
+              data: (products) {
+                if (searchQuery.isNotEmpty || selectedCategory != null) {
+                  return _buildSearchResults(context, products);
+                } else {
+                  return Column(
+                    children: [
+                      _buildCategorySection(context, 'Best Seller', bestSellers),
+                      _buildCategorySection(context, 'Classics', classics),
+                      _buildCategorySection(context, 'Children', children),
+                      _buildCategorySection(context, 'Philosophy', philosophy),
+                    ],
+                  );
+                }
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(child: Text('Error: $error')),
+            ),
           ],
         ),
       ),
@@ -307,6 +299,92 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildSearchBar(WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: TextField(
+        onChanged: (value) {
+          ref.read(searchQueryProvider.notifier).state = value;
+        },
+        decoration: InputDecoration(
+          hintText: 'Search',
+          hintStyle: TextStyle(color: Colors.grey[700], fontSize: 14),
+          prefixIcon: Icon(Icons.search, color: Colors.grey[700], size: 20),
+          filled: true,
+          fillColor: const Color(0xFFF4F4FF),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 0),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchResults(BuildContext context, List<Product> products) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Search Results (${products.length})',
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+              return _buildProductCard(context, product);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductCard(BuildContext context, Product product) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(8),
+        leading: Image.network(
+          product.cover,
+          width: 50,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.image_not_supported),
+        ),
+        title: Text(
+          product.name,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        ),
+        subtitle: Text(
+          product.author ?? '',
+          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+        ),
+        trailing: Text(
+          '${product.price.toStringAsFixed(2)} \$',
+          style: const TextStyle(
+            color: Color(0xFF6251DD),
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+      ),
     );
   }
 } 
