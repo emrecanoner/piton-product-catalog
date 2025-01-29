@@ -54,7 +54,9 @@ class SplashScreen extends ConsumerWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFEF6B4A), // Turuncu buton
                   minimumSize: Size(double.infinity, size.height * 0.07),
-                  shape: const RoundedRectangleBorder(), // Köşeler düz
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4), // Burada 4 yapıyoruz
+                  ),
                 ),
                 child: Text(
                   'auth.login'.tr(),

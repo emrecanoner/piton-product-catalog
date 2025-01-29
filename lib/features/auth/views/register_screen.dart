@@ -218,7 +218,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           onPressed: _register,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFEF6B4A),
-                            shape: const RoundedRectangleBorder(),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
                           ),
                           child: Text(
                             'auth.register'.tr(),
@@ -248,8 +250,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       hintText: hint,
       filled: true,
       fillColor: const Color(0xFFF4F5F7),
-      border: const OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(4),
         borderSide: BorderSide.none,
       ),
       contentPadding: EdgeInsets.symmetric(
