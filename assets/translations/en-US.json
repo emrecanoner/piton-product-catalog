@@ -5,8 +5,9 @@
         "error": "Error",
         "success": "Success",
         "skip": "Skip",
-        "search": "Search...",
-        "ok": "Ok"
+        "search": "Search",
+        "ok": "Ok",
+        "search_results": "Search Results ({count})"
     },
     "auth": {
         "login": "Login",
@@ -37,6 +38,11 @@
             "nameRequired": "Name is required",
             "invalidEmail": "Please enter a valid email",
             "passwordTooShort": "Password must be at least 6 characters"
+        },
+        "form": {
+            "email_placeholder": "john@mail.com",
+            "password_placeholder": "••••••••",
+            "name_placeholder": "Full Name"
         }
     },
     "validation": {

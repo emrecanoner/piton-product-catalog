@@ -172,7 +172,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             SizedBox(height: size.height * 0.03),
                             
-                            Text('E-mail',
+                            Text(
+                              'auth.email'.tr(),
                               style: TextStyle(
                                 fontSize: size.width * 0.03,
                                 color: Colors.grey[700],
@@ -182,7 +183,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             SizedBox(height: size.height * 0.005),
                             TextFormField(
                               controller: _emailController,
-                              decoration: _getInputDecoration('john@mail.com', size),
+                              decoration: _getInputDecoration('auth.form.email_placeholder'.tr(), size),
                               validator: (value) {
                                 final error = Validators.validateEmail(value);
                                 if (error != null) {
@@ -193,7 +194,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             SizedBox(height: size.height * 0.02),
                             
-                            Text('Password',
+                            Text(
+                              'auth.password'.tr(),
                               style: TextStyle(
                                 fontSize: size.width * 0.03,
                                 color: Colors.grey[700],
@@ -203,11 +205,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             SizedBox(height: size.height * 0.005),
                             TextFormField(
                               controller: _passwordController,
-                              decoration: _getInputDecoration('••••••••', size),
+                              decoration: _getInputDecoration('auth.form.password_placeholder'.tr(), size),
                               obscureText: true,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Password is required';
+                                  return 'validation.password_required'.tr();
                                 }
                                 return null;
                               },
@@ -237,8 +239,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       ),
                                     ),
                                     SizedBox(width: size.width * 0.02),
-                                    const Text(
-                                      'Remember me',
+                                    Text(
+                                      'auth.rememberMe'.tr(),
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF6251DD),
@@ -256,9 +258,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       ),
                                     );
                                   },
-                                  child: const Text(
-                                    'Register',
-                                    style: TextStyle(
+                                  child: Text(
+                                    'auth.register'.tr(),
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       color: Color(0xFF6251DD),
                                       fontWeight: FontWeight.w600,

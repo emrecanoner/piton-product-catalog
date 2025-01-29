@@ -180,7 +180,7 @@ class HomeScreen extends ConsumerWidget {
                   );
                 },
                 child: Text(
-                  'View All',
+                  'home.view_all'.tr(),
                   style: TextStyle(
                     color: Colors.red[400],
                     fontSize: 12,
@@ -320,7 +320,7 @@ class HomeScreen extends ConsumerWidget {
           ref.read(searchQueryProvider.notifier).state = value;
         },
         decoration: InputDecoration(
-          hintText: 'Search',
+          hintText: 'common.search'.tr(),
           hintStyle: TextStyle(color: Colors.grey[400]),
           prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
           suffixIcon: Icon(Icons.tune, color: Colors.grey[400]),
@@ -343,7 +343,7 @@ class HomeScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Search Results (${products.length})',
+            'common.search_results'.tr(namedArgs: {'count': products.length.toString()}),
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,

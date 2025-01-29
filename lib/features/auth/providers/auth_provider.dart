@@ -23,6 +23,14 @@ class AuthNotifier extends StateNotifier<AsyncValue<bool>> {
 
   AuthNotifier(this._repository) : super(const AsyncValue.data(false));
 
+  Future<bool> isLoggedIn() async {
+    try {
+      return await _repository.isLoggedIn();
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> login(String email, String password, {bool rememberMe = false}) async {
     try {
       state = const AsyncValue.loading();

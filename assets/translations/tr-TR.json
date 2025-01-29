@@ -5,8 +5,9 @@
         "error": "Hata",
         "success": "Başarılı",
         "skip": "Geç",
-        "search": "Ara...",
-        "ok": "Tamam"
+        "search": "Ara",
+        "ok": "Tamam",
+        "search_results": "Arama Sonuçları ({count})"
     },
     "auth": {
         "login": "Giriş Yap",
@@ -37,6 +38,11 @@
             "nameRequired": "Ad Soyad gerekli",
             "invalidEmail": "Geçerli bir e-posta adresi giriniz",
             "passwordTooShort": "Şifre en az 6 karakter olmalıdır"
+        },
+        "form": {
+            "email_placeholder": "ornek@mail.com",
+            "password_placeholder": "••••••••",
+            "name_placeholder": "Ad Soyad"
         }
     },
     "validation": {

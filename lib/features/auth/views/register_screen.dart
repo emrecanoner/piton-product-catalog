@@ -119,7 +119,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ),
                             SizedBox(height: size.height * 0.03),
                             Text(
-                              'Name',
+                              'auth.name'.tr(),
                               style: TextStyle(
                                 fontSize: size.width * 0.03,
                                 color: Colors.grey[700],
@@ -129,7 +129,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             SizedBox(height: size.height * 0.005),
                             TextFormField(
                               controller: _nameController,
-                              decoration: _getInputDecoration('John Doe'),
+                              decoration: _getInputDecoration('auth.form.name_placeholder'.tr(), size),
                               validator: (value) {
                                 final error = Validators.validateName(value);
                                 if (error != null) {
@@ -140,7 +140,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ),
                             SizedBox(height: size.height * 0.02),
                             Text(
-                              'E-mail',
+                              'auth.email'.tr(),
                               style: TextStyle(
                                 fontSize: size.width * 0.03,
                                 color: Colors.grey[700],
@@ -150,7 +150,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             SizedBox(height: size.height * 0.005),
                             TextFormField(
                               controller: _emailController,
-                              decoration: _getInputDecoration('john@mail.com'),
+                              decoration: _getInputDecoration('auth.form.email_placeholder'.tr(), size),
                               validator: (value) {
                                 final error = Validators.validateEmail(value);
                                 if (error != null) {
@@ -161,7 +161,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ),
                             SizedBox(height: size.height * 0.02),
                             Text(
-                              'Password',
+                              'auth.password'.tr(),
                               style: TextStyle(
                                 fontSize: size.width * 0.03,
                                 color: Colors.grey[700],
@@ -171,7 +171,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             SizedBox(height: size.height * 0.005),
                             TextFormField(
                               controller: _passwordController,
-                              decoration: _getInputDecoration('••••••••'),
+                              decoration: _getInputDecoration('auth.form.password_placeholder'.tr(), size),
                               obscureText: true,
                               validator: (value) {
                                 final error = Validators.validatePassword(value);
@@ -194,8 +194,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       ),
                                     );
                                   },
-                                  child: const Text(
-                                    'Login',
+                                  child: Text(
+                                    'auth.login'.tr(),
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Color(0xFF6251DD),
@@ -244,8 +244,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     );
   }
 
-  InputDecoration _getInputDecoration(String hint) {
-    final size = MediaQuery.of(context).size;
+  InputDecoration _getInputDecoration(String hint, Size size) {
     return InputDecoration(
       hintText: hint,
       filled: true,

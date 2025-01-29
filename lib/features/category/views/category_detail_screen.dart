@@ -4,6 +4,7 @@ import '../../product/models/product.dart';
 import '../../product/providers/product_provider.dart';
 import '../providers/category_search_provider.dart';
 import '../../product/views/product_detail_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CategoryDetailScreen extends ConsumerWidget {
   final String title;
@@ -74,40 +75,42 @@ class CategoryDetailScreen extends ConsumerWidget {
             ),
           ),
         ),
-        body: Column(
-          children: [
-            // Search Bar
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                onChanged: (value) {
-                  ref.read(categorySearchQueryProvider.notifier).state = value;
-                },
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  hintStyle: TextStyle(color: Colors.grey[400]),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-                  suffixIcon: Icon(Icons.tune, color: Colors.grey[400]),
-                  filled: true,
-                  fillColor: const Color(0xFFF4F4FF),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide.none,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Search Bar - Artık kaydırılabilir
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: TextField(
+                  onChanged: (value) {
+                    ref.read(categorySearchQueryProvider.notifier).state = value;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'common.search'.tr(),
+                    hintStyle: TextStyle(color: Colors.grey[400]),
+                    prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+                    suffixIcon: Icon(Icons.tune, color: Colors.grey[400]),
+                    filled: true,
+                    fillColor: const Color(0xFFF4F4FF),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
-            ),
 
-            // Products Grid
-            Expanded(
-              child: products.when(
+              // Products Grid
+              products.when(
                 data: (productList) {
                   final filteredProducts = ref.watch(
                     filteredCategoryProductsProvider(productList)
                   );
                   
                   return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.all(screenWidth * 0.04),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -238,8 +241,8 @@ class CategoryDetailScreen extends ConsumerWidget {
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stack) => Center(child: Text('Error: $error')),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

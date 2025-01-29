@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/views/login_screen.dart';
 import '../../home/views/home_screen.dart';
 import '../providers/splash_provider.dart';
+import '../../auth/providers/auth_provider.dart';
 
 class SplashScreen extends ConsumerWidget {
   const SplashScreen({super.key});
@@ -69,7 +70,21 @@ class SplashScreen extends ConsumerWidget {
               ),
               SizedBox(height: size.height * 0.02),
               TextButton(
-                onPressed: () => ref.read(splashProvider.notifier).skip(),
+                onPressed: () async {
+                  // Skip butonuna basıldığında remember me kontrolü
+                  final isLoggedIn = await ref.read(authStateProvider.notifier).isLoggedIn();
+                  if (isLoggedIn && context.mounted) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    );
+                  } else if (context.mounted) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    );
+                  }
+                },
                 child: Text(
                   'common.skip'.tr(),
                   style: TextStyle(
