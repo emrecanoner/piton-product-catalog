@@ -114,20 +114,24 @@ class CategoryDetailScreen extends ConsumerWidget {
                             borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(4),
                             ),
-                            child: Center(
-                              child: Image.network(
-                                product.cover,
-                                height: imageHeight,
-                                width: cardWidth * 0.99,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    height: imageHeight,
-                                    width: cardWidth * 0.99,
-                                    color: Colors.grey[200],
-                                    child: const Icon(Icons.image_not_supported),
-                                  );
-                                },
+                            child: Container(
+                              width: double.infinity,
+                              color: const Color(0xFFF4F4FF),
+                              child: Center(
+                                child: Image.network(
+                                  product.cover,
+                                  height: imageHeight,
+                                  width: cardWidth * 0.99,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      height: imageHeight,
+                                      width: cardWidth * 0.99,
+                                      color: Colors.grey[200],
+                                      child: const Icon(Icons.image_not_supported),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
