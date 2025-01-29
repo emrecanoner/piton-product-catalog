@@ -23,7 +23,7 @@ class HomeScreen extends ConsumerWidget {
     final children = ref.watch(childrenProvider);
     final philosophy = ref.watch(philosophyProvider);
     final searchQuery = ref.watch(searchQueryProvider);
-    final filteredProducts = ref.watch(filteredProductsProvider);
+    final filteredProducts = ref.watch(searchFilteredProductsProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
