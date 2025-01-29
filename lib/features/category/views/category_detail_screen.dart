@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../product/models/product.dart';
 import '../../product/providers/product_provider.dart';
 import '../providers/category_search_provider.dart';
+import '../../product/views/product_detail_screen.dart';
 
 class CategoryDetailScreen extends ConsumerWidget {
   final String title;
@@ -117,108 +118,118 @@ class CategoryDetailScreen extends ConsumerWidget {
                     itemCount: filteredProducts.length,
                     itemBuilder: (context, index) {
                       final product = filteredProducts[index];
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF4F4FF),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 10,
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(4),
-                                ),
-                                child: Container(
-                                  width: double.infinity,
-                                  color: const Color(0xFFF4F4FF),
-                                  child: Center(
-                                    child: Image.network(
-                                      product.cover,
-                                      height: imageHeight,
-                                      width: cardWidth * 0.99,
-                                      fit: BoxFit.contain,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Container(
-                                          height: imageHeight,
-                                          width: cardWidth * 0.99,
-                                          color: Colors.grey[200],
-                                          child: const Icon(Icons.image_not_supported),
-                                        );
-                                      },
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductDetailScreen(product: product),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF4F4FF),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 10,
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(4),
+                                  ),
+                                  child: Container(
+                                    width: double.infinity,
+                                    color: const Color(0xFFF4F4FF),
+                                    child: Center(
+                                      child: Image.network(
+                                        product.cover,
+                                        height: imageHeight,
+                                        width: cardWidth * 0.99,
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            height: imageHeight,
+                                            width: cardWidth * 0.99,
+                                            color: Colors.grey[200],
+                                            child: const Icon(Icons.image_not_supported),
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              height: cardHeight * 0.13,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  left: screenWidth * 0.02,
-                                  right: screenWidth * 0.02,
-                                  top: 1,
-                                  bottom: screenWidth * 0.01,
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                product.name,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: screenWidth * 0.026,
+                              SizedBox(
+                                height: cardHeight * 0.13,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    left: screenWidth * 0.02,
+                                    right: screenWidth * 0.02,
+                                    top: 1,
+                                    bottom: screenWidth * 0.01,
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  product.name,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: screenWidth * 0.026,
+                                                  ),
+                                                  maxLines: 2,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              const SizedBox(height: 1),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      product.author,
-                                                      style: TextStyle(
-                                                        color: Colors.grey[600],
-                                                        fontSize: screenWidth * 0.022,
+                                                const SizedBox(height: 1),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        product.author,
+                                                        style: TextStyle(
+                                                          color: Colors.grey[600],
+                                                          fontSize: screenWidth * 0.022,
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
                                                       ),
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    '${product.price.toStringAsFixed(2)} \$',
-                                                    style: TextStyle(
-                                                      color: const Color(0xFF6251DD),
-                                                      fontWeight: FontWeight.w600,
-                                                      fontSize: screenWidth * 0.03,
+                                                    Text(
+                                                      '${product.price.toStringAsFixed(2)} \$',
+                                                      style: TextStyle(
+                                                        color: const Color(0xFF6251DD),
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: screenWidth * 0.03,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },

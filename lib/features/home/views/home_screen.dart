@@ -371,6 +371,14 @@ class HomeScreen extends ConsumerWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetailScreen(product: product),
+            ),
+          );
+        },
         contentPadding: const EdgeInsets.all(8),
         leading: Image.network(
           product.cover,
