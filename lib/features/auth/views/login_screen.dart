@@ -206,9 +206,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               decoration: _getInputDecoration('••••••••', size),
                               obscureText: true,
                               validator: (value) {
-                                final error = Validators.validatePassword(value);
-                                if (error != null) {
-                                  return error.replaceAll('. ', '.\n');
+                                if (value == null || value.isEmpty) {
+                                  return 'Password is required';
                                 }
                                 return null;
                               },
