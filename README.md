@@ -1,16 +1,41 @@
 # Product Catalog App
 
-A Flutter application for displaying and managing product catalogs.
+Modern bir kitap kataloğu uygulaması, Flutter ile geliştirilmiştir.
 
-## Features
+![Splash Screen](assets/app/splash.png)
 
-- User authentication (login/register)
-- Product listing by categories
-- Product details with favorite functionality
-- Multi-language support (TR/EN)
-- Biometric authentication
-- 24-hour cache system
-- Responsive design
+## Özellikler
+
+- 🔐 Kullanıcı Kimlik Doğrulama
+  - Giriş/Kayıt sistemi
+  - Beni Hatırla özelliği
+  - Form validasyonları
+  
+- 📚 Ürün Yönetimi
+  - Kategorilere göre kitap listeleme
+  - Detaylı kitap sayfaları
+  - Favori kitap işaretleme
+  - Arama fonksiyonu
+  
+- 🌍 Çoklu Dil Desteği
+  - Türkçe
+  - İngilizce
+  
+- 💫 Kullanıcı Deneyimi
+  - Responsive tasarım
+  - Kolay gezinme
+  - Kategori filtreleme
+  - Arama özelliği
+
+## Ekran Görüntüleri
+
+| Giriş | Ana Sayfa | Ürün Detay |
+|:---:|:---:|:---:|
+| ![Login](assets/app/login.png) | ![Home](assets/app/home.png) | ![Product Detail](assets/app/product_detail.png) |
+
+| Kayıt | Kategori Detay |
+|:---:|:---:|
+| ![Register](assets/app/register.png) | ![Category Detail](assets/app/category_detail.png) |
 
 ## Getting Started
 
