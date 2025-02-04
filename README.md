@@ -1,41 +1,39 @@
 # Product Catalog App
 
-Modern bir kitap kataloğu uygulaması, Flutter ile geliştirilmiştir.
+A modern book catalog application developed with Flutter.
 
-![Splash Screen](assets/app/splash.png)
+## Features
 
-## Özellikler
-
-- 🔐 Kullanıcı Kimlik Doğrulama
-  - Giriş/Kayıt sistemi
-  - Beni Hatırla özelliği
-  - Form validasyonları
+- 🔐 User Authentication
+  - Login/Register system
+  - Remember Me feature
+  - Form validations
   
-- 📚 Ürün Yönetimi
-  - Kategorilere göre kitap listeleme
-  - Detaylı kitap sayfaları
-  - Favori kitap işaretleme
-  - Arama fonksiyonu
+- 📚 Product Management
+  - Book listing by categories
+  - Detailed book pages
+  - Favorite book marking
+  - Search function
   
-- 🌍 Çoklu Dil Desteği
-  - Türkçe
-  - İngilizce
+- 🌍 Multi-Language Support
+  - Turkish
+  - English
   
-- 💫 Kullanıcı Deneyimi
-  - Responsive tasarım
-  - Kolay gezinme
-  - Kategori filtreleme
-  - Arama özelliği
+- 💫 User Experience
+  - Responsive design
+  - Easy navigation
+  - Category filtering
+  - Search feature
 
-## Ekran Görüntüleri
+## Screenshots
 
-| Giriş | Ana Sayfa | Ürün Detay |
+| Login | Register | Home |
 |:---:|:---:|:---:|
-| ![Login](assets/app/login.png) | ![Home](assets/app/home.png) | ![Product Detail](assets/app/product_detail.png) |
+| ![Login](assets/app/login.png) | ![Register](assets/app/register.png) | ![Home](assets/app/home.png) |
 
-| Kayıt | Kategori Detay |
+| Product Detail | Category Detail |
 |:---:|:---:|
-| ![Register](assets/app/register.png) | ![Category Detail](assets/app/category_detail.png) |
+| ![Product Detail](assets/app/product_detail.png) | ![Category Detail](assets/app/category_detail.png) |
 
 ## Getting Started
 
@@ -95,18 +93,3 @@ lib/
     ├── models/
     └── widgets/
 ```
-
-## Testing
-
-To run the tests:
-```bash
-flutter test
-```
-
-## Contributing
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
