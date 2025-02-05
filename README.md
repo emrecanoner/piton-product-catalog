@@ -29,11 +29,11 @@ A modern book catalog application developed with Flutter.
 
 | Login | Register | Home |
 |:---:|:---:|:---:|
-| ![Login](assets/app/login.png) | ![Register](assets/app/register.png) | ![Home](assets/app/home.png) |
+| <img src="assets/app/login.png" width="250" height="500"> | <img src="assets/app/register.png" width="250" height="500"> | <img src="assets/app/home.png" width="250" height="500"> |
 
 | Product Detail | Category Detail |
 |:---:|:---:|
-| ![Product Detail](assets/app/product_detail.png) | ![Category Detail](assets/app/category_detail.png) |
+| <img src="assets/app/product_detail.png" width="250" height="500"> | <img src="assets/app/category_detail.png" width="250" height="500"> |
 
 ## Getting Started
 
@@ -65,13 +65,30 @@ flutter pub run build_runner build --delete-conflicting-outputs
 flutter run
 ```
 
-## Architecture
+## Architecture and Technologies
 
-- State Management: Riverpod
-- Dependency Injection: Injectable
-- Network Layer: Dio
-- Local Storage: Hive & SharedPreferences
-- Code Generation: Freezed
+### State Management
+- **Riverpod**: Used for state management throughout the application
+  - Provider definitions
+  - AsyncValue usage
+  - State notifier implementations
+
+### Local Storage
+- **SharedPreferences**: Simple data storage
+  - User preferences
+  - Token storage
+  - "Remember Me" feature
+
+### Multi-Language Support
+- **Easy Localization**: TR/EN language support
+  - JSON-based translation files
+  - Context extension methods
+  - Dynamic string formatting
+
+### UI/UX
+- **Material Design**: Modern and clean interface
+- **Responsive Design**: Adaptation to different screen sizes
+- **Custom Widgets**: Customized components
 
 ## Project Structure
 
@@ -79,17 +96,37 @@ flutter run
 lib/
 ├── core/
 │   ├── constants/
-│   ├── theme/
-│   ├── init/
+│   ├── providers/
 │   └── utils/
 ├── features/
 │   ├── auth/
+│   │   ├── models/
+│   │   ├── providers/
+│   │   ├── repositories/
+│   │   └── views/
+│   ├── category/
+│   │   ├── providers/
+│   │   └── views/
 │   ├── home/
+│   │   ├── providers/
+│   │   └── views/
 │   ├── product/
+│   │   ├── models/
+│   │   ├── providers/
+│   │   ├── services/
+│   │   └── views/
 │   └── splash/
-└── product/
-    ├── cache/
-    ├── di/
-    ├── models/
-    └── widgets/
+│       └── providers/
+│       └── views/
+└── main.dart
 ```
+
+### Layers
+
+- **Core**: Basic configurations and helper classes
+- **Features**: Each feature has its own folder in a modular structure
+  - Auth: Authentication
+  - Category: Category management
+  - Home: Home page
+  - Product: Product management
+  - Splash: Splash screen
