@@ -27,13 +27,13 @@ A modern book catalog application developed with Flutter.
 
 ## Screenshots
 
-| Login | Register | Home |
+| Splash | Login | Register |
 |:---:|:---:|:---:|
-| <img src="assets/app/login.png" width="250" height="500"> | <img src="assets/app/register.png" width="250" height="500"> | <img src="assets/app/home.png" width="250" height="500"> |
+| <img src="assets/app/splash.png" width="250" height="500"> | <img src="assets/app/register.png" width="250" height="500"> | <img src="assets/app/home.png" width="250" height="500"> |
 
-| Product Detail | Category Detail |
-|:---:|:---:|
-| <img src="assets/app/product_detail.png" width="250" height="500"> | <img src="assets/app/category_detail.png" width="250" height="500"> |
+| Home | Product Detail | Category Detail |
+|:---:|:---:|:---:|
+| <img src="assets/app/home.png" width="250" height="500"> | <img src="assets/app/product_detail.png" width="250" height="500"> | <img src="assets/app/category_detail.png" width="250" height="500"> |
 
 ## Getting Started
 
