@@ -85,4 +85,4 @@ app.*.map.json
 todo.txt
 
 # Postman
-postman_api.json
+.api.json
